@@ -1,0 +1,21 @@
+.list-view .list-cell:odd {
+    -fx-background-color: gray;
+    -fx-text-fill: white;
+    -fx-font-weight: 200;
+    -fx-font-size: 15;
+}
+
+.list-view .list-cell:even {
+    -fx-background-color: gray;
+    -fx-text-fill: white;
+    -fx-font-weight: 200;
+    -fx-font-size: 15;
+}
+
+.list-view .list-cell:selected:odd,
+.list-view .list-cell:selected:even {
+    -fx-background-color: red;
+    -fx-text-fill: white;
+    -fx-font-weight: 200;
+    -fx-font-size: 15;
+}

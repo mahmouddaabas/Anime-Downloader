@@ -1,0 +1,7 @@
+.text-field {
+    -fx-background-color: gray;
+    -fx-text-fill: white;
+}
+.text-field:focused {
+    -fx-background-color: gray;
+}

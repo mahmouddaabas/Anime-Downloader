@@ -36,18 +36,13 @@ public class MainView extends Application {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
-
-
     }
 
     @FXML
     void handleBrowse() throws IOException {
-        //Populates the list before switching scenes otherwise it wont update.
-        Browse b = new Browse();
-        b.poplist();
         root = FXMLLoader.load(getClass().getResource("/fxml/Browse.fxml"));
-        addBackground();
         browseLabel.getScene().setRoot(root);
+        addBackground();
     }
 
     void addBackground() {
