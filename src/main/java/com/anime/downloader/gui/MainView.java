@@ -8,7 +8,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
+
+import javax.swing.text.View;
 import java.io.IOException;
 import java.util.List;
 
@@ -30,7 +33,7 @@ public class MainView extends Application {
         addBackground();
 
         //Sets the application logo and other default things.
-        //stage.getIcons().add(new Image(View.class.getResourceAsStream("images/icon.jpg")));
+        stage.getIcons().add(new Image(MainView.class.getResourceAsStream("/image/icon.jpg")));
         stage.setTitle("Anime-Downloader");
         stage.setResizable(true);
         Scene scene = new Scene(root);

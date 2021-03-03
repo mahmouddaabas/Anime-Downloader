@@ -19,7 +19,10 @@ public class API {
     private String keyword;
     private String selectedItem;
     private String imageLink;
-
+    private String country;
+    private String status;
+    private String released;
+    private String genre;
     private String synopsis;
 
     //Gets information from the anime website.
@@ -116,6 +119,28 @@ public class API {
             break;
         }
 
+        //Gets the Country, Status, Release year and the Genre.
+        link = doc.select("div.right");
+        for(Element element : link.select("p.des")) {
+            //Only select the things we want.
+            if(element.select("p.des").text().contains("Country")) {
+                country = element.select("p.des").text().replace("J", " J");
+                System.out.println(country);
+            }
+            if(element.select("p.des").text().contains("Status")) {
+                status = element.select("p.des").text();
+                System.out.println(status);
+            }
+            if(element.select("p.des").text().contains("Released")) {
+                released = element.select("p.des").text().replace("ed", "ed:");
+                System.out.println(released);
+            }
+            if(element.select("p.des").text().contains("Genre")) {
+                genre = element.select("p.des").text();
+                System.out.println(genre);
+            }
+        }
+
         return this.episodeList;
 
     }
@@ -153,6 +178,22 @@ public class API {
     //Send image link to episode list.
     public String getImageLink() {
         return imageLink;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public String getReleased() {
+        return released;
+    }
+
+    public String getGenre() {
+        return genre;
     }
 
 }

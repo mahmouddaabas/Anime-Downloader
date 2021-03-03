@@ -10,7 +10,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         Application.launch(MainView.class, args);
-        //API api = new API();
-        //api.getPopularList();
+        /*API api = new API();
+        api.getEpisodeList();*/
     }
 }
