@@ -11,6 +11,6 @@ public class Main {
 
         Application.launch(MainView.class, args);
         //API api = new API();
-        //api.getEpisodeList();
+        //api.getPopularList();
     }
 }

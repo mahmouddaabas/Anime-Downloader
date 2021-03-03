@@ -100,8 +100,8 @@ public class Browse {
         //Runs code only once so it doesnt spam add the list.
         if(!alreadyExecuted) {
             API api = new API();
-            listViewTitles.getItems().add("");
-            listViewTitles.getItems().addAll(api.getNewestList());
+            //listViewTitles.getItems().add("");
+            listViewTitles.getItems().addAll(api.getPopularList());
             listViewEpisodes.getItems().add("");
             alreadyExecuted = true;
         }
