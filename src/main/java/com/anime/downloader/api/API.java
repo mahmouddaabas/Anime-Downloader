@@ -1,11 +1,12 @@
 package com.anime.downloader.api;
 
-import javafx.scene.control.Hyperlink;
+import javafx.stage.Stage;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,6 @@ public class API {
 
     private List<String> newestList = new ArrayList<String>();
     private List<String> searchedList = new ArrayList<String>();
-    private List<String> downloadList = new ArrayList<String>();
     private List<String> episodeList = new ArrayList<String>();
     private String keyword;
     private String selectedItem;
@@ -24,6 +24,10 @@ public class API {
     private String released;
     private String genre;
     private String synopsis;
+    private String downloadLink;
+    private String downloadURL;
+    private String directDLink;
+    private String path;
 
     //Gets information from the anime website.
     public List<String> getPopularList() throws IOException {
@@ -145,19 +149,43 @@ public class API {
 
     }
 
-    public List <String> getDownloadLink() throws IOException {
-        String url = "https://www7.animeseries.io/watch/detective-conan-episode-999.html";
+    public void getDownloadLink() throws IOException {
+
+        String animename;
+
+        //Grabs the initial link from the episode page.
+        String url = downloadURL;
         Document doc = Jsoup.connect(url).get();
-        //Grabs the download link.
         Elements link = doc.select("div.plugins");
         for(Element element : link.select("li")) {
             if(element.select("a").attr("href").contains("//gogo-play")) {
-                String downloadLink = element.select("a").attr("href");
-                System.out.println("\nDownload_Link: " + "https:" + downloadLink);
+                downloadLink = "https:" + element.select("a").attr("href");
+                System.out.println("\nDownload_Link: " + downloadLink);
             }
         }
 
-        return this.downloadList;
+        //Grabs the anime name.
+        url = downloadLink;
+        doc = Jsoup.connect(url).get();
+        link = doc.select("div.name");
+        for(Element element : link.select("div.name")) {
+            animename = element.select("div.name").text();
+            System.out.println("\nAnime Name: " + animename);
+            break;
+        }
+
+        //Grabs the first direct link it finds, usually the best quality one.
+        url = downloadLink;
+        doc = Jsoup.connect(url).get();
+        link = doc.select("div.mirror_link");
+        for(Element element : link.select("div.dowload")) {
+            directDLink = element.select("a").attr("href");
+            System.out.println("\nDirect_Download_Link: " + directDLink);
+            break;
+        }
+
+        //Starts the download.
+        Download download = new Download(getDirectDLink(), new File(path));
     }
 
     //Get inserted word from browse textbox.
@@ -194,6 +222,18 @@ public class API {
 
     public String getGenre() {
         return genre;
+    }
+
+    public void setDownloadURL(String downloadURL) {
+        this.downloadURL = downloadURL;
+    }
+
+    public String getDirectDLink() {
+        return this.directDLink;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
 }

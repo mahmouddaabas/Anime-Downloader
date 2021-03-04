@@ -6,15 +6,19 @@ import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
+import javafx.stage.Window;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -89,7 +93,6 @@ public class Browse {
     public void episodeListClicked() throws URISyntaxException, IOException {
 
         System.out.println(listViewEpisodes.getSelectionModel().getSelectedItem());
-        //Selects first in list so image is not null.
         listViewEpisodes.getSelectionModel().getSelectedItem();
 
         //Creates an alertbox.
@@ -109,8 +112,31 @@ public class Browse {
             }
         }
 
-        else if(result.get().getText() == "OK_DONE") {
-            System.out.println("Not implemented yet.");
+        else if(result.get().getText() == "Download") {
+
+            API api = new API();
+            //Opens a File Chooser so the user can pick where they want to save.
+            Window window = listViewEpisodes.getScene().getWindow();
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Dialog");
+
+            //Cleans up the initial name.
+            String removeInitial = listViewEpisodes.getSelectionModel().getSelectedItem().replace(
+                    "https://www7.animeseries.io/watch/", "");
+            String finalName = removeInitial.replace(".html", "");
+
+            fileChooser.setInitialFileName(finalName);
+            fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "/Desktop"));
+            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Video Format", "*.mp4"));
+            File file = fileChooser.showSaveDialog(window);
+            fileChooser.setInitialDirectory(file.getParentFile());
+
+            //Resets the selection to send the correct url(not replaced one) to the API.
+            listViewEpisodes.getSelectionModel().getSelectedItem();
+            //Sends path and URL to API Class and starts download.
+            api.setPath(file.toString());
+            api.setDownloadURL(listViewEpisodes.getSelectionModel().getSelectedItem());
+            api.getDownloadLink();
         }
         else {
             System.out.println("Doing nothing.");
