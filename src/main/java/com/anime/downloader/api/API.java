@@ -1,6 +1,5 @@
 package com.anime.downloader.api;
 
-import javafx.stage.Stage;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -184,8 +183,8 @@ public class API {
             break;
         }
 
-        //Starts the download.
-        Download download = new Download(getDirectDLink(), new File(path));
+        //Starts the download in a new thread.
+        new Thread(new Download(getDirectDLink(), new File(path))).start();
     }
 
     //Get inserted word from browse textbox.

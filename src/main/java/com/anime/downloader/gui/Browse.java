@@ -1,12 +1,13 @@
 package com.anime.downloader.gui;
 
 import com.anime.downloader.api.API;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -16,6 +17,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -27,11 +30,11 @@ import java.util.Optional;
 
 public class Browse {
 
-    ObservableList oblist = FXCollections.observableArrayList();
+    ObservableList<String> oblist = FXCollections.observableArrayList();
     @FXML
     private ListView<String> listViewTitles;
     @FXML
-    private Label browseLabel;
+    private Label browseLabel, testLabel;
     @FXML
     private ListView<String> listViewEpisodes;
     @FXML
@@ -44,8 +47,12 @@ public class Browse {
     private ImageView animeImageView;
     @FXML
     private Label countryLabel, statusLabel, releasedLabel, genreLabel;
+    private boolean status;
 
-    public Browse() throws IOException {
+	@FXML
+    private ProgressBar progressBar;
+
+	public Browse() throws IOException {
         oblist = FXCollections.observableArrayList();
         listViewTitles = new ListView<>();
     }
@@ -87,13 +94,15 @@ public class Browse {
         animeImageView.setFitWidth(170);
         animeImageView.setFitHeight(158);
         animeImageView.setImage(img);
+    }	
 
-    }
-
-    public void episodeListClicked() throws URISyntaxException, IOException {
-
+    public void episodeListClicked() throws URISyntaxException, IOException, InterruptedException {
         System.out.println(listViewEpisodes.getSelectionModel().getSelectedItem());
         listViewEpisodes.getSelectionModel().getSelectedItem();
+        
+        //Resets the progress
+        progressBar.progressProperty().unbind();
+        progressBar.setProgress(0);
 
         //Creates an alertbox.
         Alert alert = new Alert(Alert.AlertType.NONE);
@@ -137,16 +146,20 @@ public class Browse {
             api.setPath(file.toString());
             api.setDownloadURL(listViewEpisodes.getSelectionModel().getSelectedItem());
             api.getDownloadLink();
+            
+            //Starts updating the progress bar.
+            progressBar.progressProperty().bind(task.progressProperty());
+            new Thread(task).start();
         }
+        
         else {
             System.out.println("Doing nothing.");
         }
-
-
     }
 
     public void handleLoadButton() throws IOException {
         populateFromKeywordTitles();
+        sendCompleteMessage();
         //popListWithNewestTitles();
     }
 
@@ -154,13 +167,50 @@ public class Browse {
     public void refreshList() throws IOException {
         //Boolean is an instance variable so it doesnt reset everytime the method is run.
         //Runs code only once so it doesnt spam add the list.
+    	
         if(!alreadyExecuted) {
             API api = new API();
             //listViewTitles.getItems().add("");
             listViewTitles.getItems().addAll(api.getPopularList());
             listViewEpisodes.getItems().add("");
+            progressBar.setProgress(0);
             alreadyExecuted = true;
         }
     }
+    
+    
+    public void sendCompleteMessage() throws IOException {
+        
+    	if(status == true) {
+        	/*System.out.println("Here now");
+            Alert completed = new Alert(AlertType.INFORMATION);
+            completed.initModality(Modality.APPLICATION_MODAL);
+            completed.initOwner(null);
+            completed.setTitle("STATUS");
+            completed.setContentText("Download completed!");
+            completed.showAndWait();*/
+            status = false;
+    		JOptionPane.showMessageDialog(null, "Download Completed");
+    	}   
+    }
+    
+    Task<Void> task = new Task<Void>() {
+    	
+        @Override
+        protected Void call() throws Exception {
+            double max = 137;
+            for (int i = 0; i <= max; i++) {
+            	if(i == 137) {
+            		status = true;
+            		sendCompleteMessage();
+            	}
+                updateProgress(i, max);
+                Thread.sleep(100);
+            }
+            return null;
+        }
 
+    };
+    
 }
+
